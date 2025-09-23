@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestión de Eventos Ambientales</title>
+
+  <style>
+  /* Base styles for the body and main containers */
+  body {
+    font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+  }
+
+  h1, h2 {
+    color: #1e3a8a;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 10px;
+    margin-top: 40px;
+  }
+
+  /* Form container and general element styles */
+  #eventoForm {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  label {
+    font-weight: 600;
+    color: #4a5568;
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  input[type="url"],
+  input[type="date"],
+  input[type="time"],
+  input[type="file"],
+  textarea,
+  select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  
+  input:focus, textarea:focus, select:focus {
+    border-color: #3b82f6;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  /* Specific section for the organizer to make it distinct */
+  h3 {
+    grid-column: 1 / -1;
+    color: #1e3a8a;
+    font-size: 1.25rem;
+    margin-top: 15px;
+    border-bottom: 1px dashed #d1d5db;
+    padding-bottom: 5px;
+  }
+
+  /* Button styling */
+  button[type="submit"] {
+    grid-column: 1 / -1;
+    background-color: #10b981;
+    color: #ffffff;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    justify-self: start;
+  }
+
+  button[type="submit"]:hover {
+    background-color: #059669;
+    transform: translateY(-2px);
+  }
+
+  button[type="button"] {
+    grid-column: 1 / -1;
+    background-color: #6b7280;
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    justify-self: start;
+    margin-left: 10px;
+  }
+
+  button[type="button"]:hover {
+    background-color: #4b5563;
+  }
+
+  /* Image preview and message containers */
+  #previewImagen {
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+  }
+
+  #response p {
+    padding: 15px;
+    border-radius: 8px;
+    font-weight: 500;
+    margin-top: 20px;
+  }
+
+  .success {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+    transition: opacity 0.5s ease-out;
+  }
+
+  .error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+    transition: opacity 0.5s ease-out;
+  }
+
+  .mensaje-desvaneciendo {
+    opacity: 0.3;
+  }
+  
+  /* Events list styling */
+  .eventos {
+    display: grid;
+    gap: 20px;
+    margin-top: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+
+  .evento {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+  }
+
+  .evento h3 {
+    color: #1e3a8a;
+    margin: 0 0 10px 0;
+    border: none;
+    padding: 0;
+  }
+
+  .evento p {
+    margin: 5px 0;
+    font-size: 0.95rem;
+  }
+
+  .evento b {
+    color: #4a5568;
+  }
+
+  .evento button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background-color 0.2s;
+  }
+
+  .evento button:first-of-type {
+    background-color: #3b82f6;
+    color: #ffffff;
+  }
+
+  .evento button:first-of-type:hover {
+    background-color: #2563eb;
+  }
+  
+  .evento button:last-of-type {
+    background-color: #ef4444;
+    color: #ffffff;
+  }
+
+  .evento button:last-of-type:hover {
+    background-color: #dc2626;
+  }
+
+  /* Form mode indicator */
+  .form-mode {
+    background-color: #dbeafe;
+    color: #1e3a8a;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .form-mode.edit {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+</style>
+ 
+</head>
+<body>
+  <!-- Indicador del modo del formulario -->
+  <div id="formMode" class="form-mode">Crear Nuevo Evento</div>
+
+  <h2 id="formTitle">Crear / Editar Evento</h2>
+  <form id="eventoForm">
+    <input type="hidden" id="eventoId">
+
+    <label>Título</label>
+    <input type="text" id="titulo" required minlength="3" maxlength="150">
+
+    <label>Descripción</label>
+    <textarea id="descripcion" required minlength="10" maxlength="500"></textarea>
+
+    <label>Fecha</label>
+    <input type="date" id="fecha" required>
+
+    <label>Hora</label>
+    <input type="time" id="hora" required>
+
+    <label>Ubicación</label>
+    <input type="text" id="ubicacion" required minlength="5" maxlength="200">
+
+    <label>Categoría</label>
+    <select id="categoria" required>
+      <option value="">Seleccione...</option>
+      <option value="recoleccion-basura">Recolección de Basura</option>
+      <option value="reciclaje">Reciclaje</option>
+      <option value="reforestacion">Reforestación</option>
+      <option value="conservacion-fauna">Conservación de Fauna</option>
+      <option value="educacion-ambiental">Educación Ambiental</option>
+      <option value="energia-renovable">Energía Renovable</option>
+      <option value="agua-saneamiento">Agua y Saneamiento</option>
+      <option value="agricultura-sostenible">Agricultura Sostenible</option>
+      <option value="cambio-climatico">Cambio Climático</option>
+      <option value="biodiversidad">Biodiversidad</option>
+      <option value="contaminacion">Contaminación</option>
+      <option value="economia-circular">Economía Circular</option>
+      <option value="transporte-sostenible">Transporte Sostenible</option>
+      <option value="otro">Otro</option>
+    </select>
+
+    <h3>Organizador</h3>
+    <label>Nombre</label>
+    <input type="text" id="organizador_nombre" required minlength="3" maxlength="100">
+
+    <label>Email</label>
+    <input type="email" id="organizador_email">
+
+    <label>Teléfono</label>
+    <input type="text" id="organizador_telefono">
+
+    <label>WhatsApp</label>
+    <input type="text" id="organizador_whatsapp">
+
+    <label>Facebook</label>
+    <input type="url" id="organizador_facebook">
+
+    <label>Instagram</label>
+    <input type="text" id="organizador_instagram">
+
+    <label>Sitio Web</label>
+    <input type="url" id="organizador_sitioWeb">
+
+    <label>Otro Contacto</label>
+    <input type="text" id="organizador_otroContacto">
+
+    <label>Imagen</label>
+    <input type="file" id="imagen" accept="image/*">
+    <img id="previewImagen" src="" alt="Imagen actual" style="max-width:150px; display:none; margin-top:10px;">
+
+    <label>Estado</label>
+    <select id="estado">
+      <option value="activo">Activo</option>
+      <option value="cancelado">Cancelado</option>
+      <option value="finalizado">Finalizado</option>
+    </select>
+
+    <div style="grid-column: 1 / -1; display: flex; gap: 10px;">
+      <button type="submit" id="submitBtn">Guardar Evento</button>
+      <button type="button" id="cancelBtn" onclick="cancelarEdicion()" style="display: none;">Cancelar</button>
+    </div>
+  </form>
+
+  <!-- Contenedor para mostrar mensajes -->
+  <div id="response"></div>
+
+  <h2>Eventos Registrados</h2>
+  <div id="eventos" class="eventos"></div>
+
+  <script>
+    const API_URL = '/api/eventos/';
+    let modoEdicion = false;
+
+    // Función para mostrar mensajes con desvanecimiento automático
+    function mostrarMensaje(mensaje, tipo = 'success', duracion = 3000) {
+      const responseDiv = document.getElementById("response");
+      responseDiv.innerHTML = `<p class="${tipo}">${mensaje}</p>`;
+      
+      // Desvanecimiento suave
+      setTimeout(() => {
+        const mensajeEl = responseDiv.querySelector('p');
+        if (mensajeEl) {
+          mensajeEl.classList.add('mensaje-desvaneciendo');
+          setTimeout(() => {
+            responseDiv.innerHTML = "";
+          }, 500);
+        }
+      }, duracion);
+    }
+
+    document.getElementById("eventoForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData();
+      const eventoId = document.getElementById("eventoId").value;
+
+      // Datos principales
+      formData.append("titulo", document.getElementById("titulo").value);
+      formData.append("descripcion", document.getElementById("descripcion").value);
+      formData.append("fecha", document.getElementById("fecha").value);
+      formData.append("hora", document.getElementById("hora").value);
+      formData.append("ubicacion", document.getElementById("ubicacion").value);
+      formData.append("categoria", document.getElementById("categoria").value);
+      formData.append("estado", document.getElementById("estado").value);
+
+      // Organizador: solo mandar campos no vacíos
+      const organizador = { nombre: document.getElementById("organizador_nombre").value };
+      const camposExtra = ["email", "telefono", "whatsapp", "facebook", "instagram", "sitioWeb", "otroContacto"];
+
+      camposExtra.forEach(campo => {
+        const el = document.getElementById(`organizador_${campo}`);
+        if (el && el.value.trim() !== "") {
+          organizador[campo] = el.value.trim();
+        }
+      });
+
+      formData.append("organizador", JSON.stringify(organizador));
+
+      // Imagen
+      const imagenFile = document.getElementById("imagen").files[0];
+      if (imagenFile) {
+        formData.append("imagen", imagenFile);
+      }
+
+      try {
+        let url, method;
+        
+        if (modoEdicion && eventoId) {
+          // Modo actualización
+          url = `/api/eventos/${eventoId}`;
+          method = "PUT";
+        } else {
+          // Modo creación
+          url = "/api/eventos";
+          method = "POST";
+        }
+
+        const res = await fetch(url, {
+          method: method,
+          body: formData
+        });
+
+        const data = await res.json();
+        
+        if (data.success) {
+          mostrarMensaje(data.message, 'success', 2500);
+          // Limpiar formulario y salir del modo edición
+          limpiarFormulario();
+          cargarEventos();
+        } else {
+          mostrarMensaje(data.error || data.message, 'error', 4000);
+        }
+      } catch (err) {
+        mostrarMensaje(`Error: ${err.message}`, 'error', 4000);
+      }
+    });
+
+    // Función para limpiar el formulario
+    function limpiarFormulario() {
+      document.getElementById("eventoForm").reset();
+      document.getElementById("eventoId").value = "";
+      document.getElementById("previewImagen").style.display = "none";
+      
+      // Salir del modo edición
+      modoEdicion = false;
+      document.getElementById("formMode").textContent = "Crear Nuevo Evento";
+      document.getElementById("formMode").className = "form-mode";
+      document.getElementById("submitBtn").textContent = "Guardar Evento";
+      document.getElementById("cancelBtn").style.display = "none";
+    }
+
+    // Función para cancelar edición
+    function cancelarEdicion() {
+      limpiarFormulario();
+      document.getElementById("response").innerHTML = "";
+    }
+
+    // Editar evento
+    async function editarEvento(id) {
+      try {
+        const res = await fetch(`${API_URL}/${id}`);
+        
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        
+        const e = await res.json();
+        
+        // Debug: Ver qué datos llegan
+        console.log('Datos del evento:', e);
+        
+        // Verificar que tenemos los datos mínimos
+        if (!e.id) {
+          throw new Error('Evento no encontrado o datos incompletos');
+        }
+        
+        // Activar modo edición
+        modoEdicion = true;
+        document.getElementById("formMode").textContent = "Editando Evento";
+        document.getElementById("formMode").className = "form-mode edit";
+        document.getElementById("submitBtn").textContent = "Actualizar Evento";
+        document.getElementById("cancelBtn").style.display = "inline-block";
+        
+        // Llenar formulario con datos del evento - con validaciones
+        document.getElementById('eventoId').value = e.id || '';
+        document.getElementById('titulo').value = e.titulo || '';
+        document.getElementById('descripcion').value = e.descripcion || '';
+        
+        // Manejar fecha con diferentes formatos posibles
+        let fechaFormateada = '';
+        if (e.fecha) {
+          try {
+            // Si es un objeto Date de Firebase
+            if (e.fecha._seconds) {
+              fechaFormateada = new Date(e.fecha._seconds * 1000).toISOString().split('T')[0];
+            }
+            // Si es un string ISO
+            else if (typeof e.fecha === 'string') {
+              fechaFormateada = e.fecha.split('T')[0];
+            }
+            // Si es un objeto Date normal
+            else if (e.fecha instanceof Date) {
+              fechaFormateada = e.fecha.toISOString().split('T')[0];
+            }
+            // Si es otro formato
+            else {
+              const date = new Date(e.fecha);
+              if (!isNaN(date.getTime())) {
+                fechaFormateada = date.toISOString().split('T')[0];
+              }
+            }
+          } catch (fechaError) {
+            console.error('Error procesando fecha:', fechaError);
+            fechaFormateada = '';
+          }
+        }
+        document.getElementById('fecha').value = fechaFormateada;
+        
+        document.getElementById('hora').value = e.hora || '';
+        document.getElementById('ubicacion').value = e.ubicacion || '';
+        document.getElementById('categoria').value = e.categoria || '';
+        
+        // Manejar organizador
+        const organizador = e.organizador || {};
+        document.getElementById('organizador_nombre').value = organizador.nombre || '';
+        document.getElementById('organizador_email').value = organizador.email || '';
+        document.getElementById('organizador_telefono').value = organizador.telefono || '';
+        document.getElementById('organizador_whatsapp').value = organizador.whatsapp || '';
+        document.getElementById('organizador_facebook').value = organizador.facebook || '';
+        document.getElementById('organizador_instagram').value = organizador.instagram || '';
+        document.getElementById('organizador_sitioWeb').value = organizador.sitioWeb || '';
+        document.getElementById('organizador_otroContacto').value = organizador.otroContacto || '';
+        
+        // Preview de imagen
+        if (e.imagen) {
+          document.getElementById('previewImagen').src = e.imagen;
+          document.getElementById('previewImagen').style.display = 'block';
+        } else {
+          document.getElementById('previewImagen').style.display = 'none';
+        }
+
+        document.getElementById('estado').value = e.estado || 'activo';
+        
+        // Scroll al formulario
+        document.getElementById('eventoForm').scrollIntoView({ behavior: 'smooth' });
+        
+      } catch (error) {
+        console.error('Error al cargar evento para editar:', error);
+        alert(`Error al cargar el evento para editar: ${error.message}`);
+      }
+    }
+
+    // Eliminar evento
+    async function eliminarEvento(id) {
+      if (!confirm('¿Seguro que deseas eliminar este evento?')) return;
+      
+      try {
+        const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+          alert('Evento eliminado exitosamente');
+          cargarEventos();
+        } else {
+          alert('Error al eliminar el evento');
+        }
+      } catch (error) {
+        console.error('Error al eliminar evento:', error);
+        alert('Error al eliminar el evento');
+      }
+    }
+
+    // Cargar lista de eventos
+    async function cargarEventos() {
+      try {
+        const res = await fetch(API_URL);
+        
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        
+        const response = await res.json();
+        const eventos = response.data || response || []; // Maneja diferentes formatos de respuesta
+        const contenedor = document.getElementById('eventos');
+        contenedor.innerHTML = '';
+
+        if (eventos.length === 0) {
+          contenedor.innerHTML = '<p style="text-align: center; color: #6b7280;">No hay eventos registrados</p>';
+          return;
+        }
+
+        eventos.forEach(ev => {
+          const div = document.createElement('div');
+          div.className = 'evento';
+          
+          // Formatear fecha de manera segura
+          let fechaFormateada = 'Fecha no disponible';
+          if (ev.fecha) {
+            try {
+              let fechaParaProcesar;
+              
+              // Si es un timestamp de Firebase
+              if (ev.fecha._seconds) {
+                fechaParaProcesar = new Date(ev.fecha._seconds * 1000);
+              }
+              // Si es un string o Date normal
+              else {
+                fechaParaProcesar = new Date(ev.fecha);
+              }
+              
+              if (!isNaN(fechaParaProcesar.getTime())) {
+                fechaFormateada = fechaParaProcesar.toLocaleDateString('es-ES');
+              }
+            } catch (fechaError) {
+              console.error('Error procesando fecha para mostrar:', fechaError);
+            }
+          }
+          
+          // Información del organizador
+          const organizadorNombre = ev.organizador?.nombre || 'No especificado';
+          
+          div.innerHTML = `
+            <h3>${ev.titulo || 'Sin título'}</h3>
+            <p>${ev.descripcion || 'Sin descripción'}</p>
+            <p><b>Fecha:</b> ${fechaFormateada} <b>Hora:</b> ${ev.hora || 'No especificada'}</p>
+            <p><b>Ubicación:</b> ${ev.ubicacion || 'No especificada'}</p>
+            <p><b>Categoría:</b> ${ev.categoria || 'No especificada'}</p>
+            <p><b>Organizador:</b> ${organizadorNombre}</p>
+            <p><b>Estado:</b> <span style="color: ${ev.estado === 'activo' ? '#059669' : ev.estado === 'cancelado' ? '#dc2626' : '#6b7280'}">${ev.estado || 'activo'}</span></p>
+            ${ev.imagen ? `<img src="${ev.imagen}" alt="Imagen del evento" style="max-width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin: 10px 0;">` : ''}
+            <div style="margin-top: 15px;">
+              <button onclick="editarEvento('${ev.id}')">Editar</button>
+              <button onclick="eliminarEvento('${ev.id}')">Eliminar</button>
+            </div>
+          `;
+          contenedor.appendChild(div);
+        });
+      } catch (error) {
+        console.error('Error al cargar eventos:', error);
+        document.getElementById('eventos').innerHTML = `<p style="color: #dc2626;">Error al cargar los eventos: ${error.message}</p>`;
+      }
+    }
+
+    // Cargar eventos al iniciar
+    cargarEventos();
+  </script>
+</body>
+</html>

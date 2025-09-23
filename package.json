@@ -1,0 +1,32 @@
+{
+  "name": "api-rest-eventos",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "dev": "nodemon main.js",
+    "build": "echo 'No build process needed'"
+  },
+  "keywords": [],
+  "author": "Emerson Aldahir Portillo Segovia",
+  "license": "ISC",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "dependencies": {
+    "cloudinary": "^2.7.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "firebase-admin": "^13.5.0",
+    "joi": "^18.0.1",
+    "multer": "^2.0.2"
+   
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
